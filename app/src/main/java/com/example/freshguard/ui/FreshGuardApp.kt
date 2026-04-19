@@ -21,11 +21,11 @@ import androidx.navigation.compose.rememberNavController
 import com.example.freshguard.navigation.BottomNavItem
 import com.example.freshguard.navigation.Screen
 import com.example.freshguard.ui.screens.auth.LoginScreen
+import com.example.freshguard.ui.screens.auth.SignUpScreen
 import com.example.freshguard.ui.screens.discover.DiscoverScreen
 import com.example.freshguard.ui.screens.home.HomeScreen
 import com.example.freshguard.ui.screens.profile.ProfileScreen
 import com.example.freshguard.ui.screens.stats.StatsScreen
-import com.example.freshguard.ui.screens.auth.SignUpScreen
 
 @Composable
 fun FreshGuardApp() {
