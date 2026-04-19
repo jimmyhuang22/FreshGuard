@@ -22,10 +22,11 @@ import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.unit.dp
 
 @Composable
-fun LoginScreen(
-    onLogin: () -> Unit,
-    onNavigateToSignUp: () -> Unit
+fun SignUpScreen(
+    onCreateAccount: () -> Unit,
+    onBack: () -> Unit
 ) {
+    var name by remember { mutableStateOf("") }
     var email by remember { mutableStateOf("") }
     var password by remember { mutableStateOf("") }
 
@@ -37,8 +38,15 @@ fun LoginScreen(
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         Text(
-            text = "FreshGuard Login",
-            style = MaterialTheme.typography.headlineMedium
+            text = "Create FreshGuard Account",
+            style = MaterialTheme.typography.headlineSmall
+        )
+
+        OutlinedTextField(
+            value = name,
+            onValueChange = { name = it },
+            label = { Text("Full name") },
+            modifier = Modifier.padding(top = 24.dp)
         )
 
         OutlinedTextField(
@@ -46,7 +54,7 @@ fun LoginScreen(
             onValueChange = { email = it },
             label = { Text("Email") },
             keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Email),
-            modifier = Modifier.padding(top = 24.dp)
+            modifier = Modifier.padding(top = 12.dp)
         )
 
         OutlinedTextField(
@@ -58,17 +66,17 @@ fun LoginScreen(
         )
 
         Button(
-            onClick = onLogin,
+            onClick = onCreateAccount,
             modifier = Modifier.padding(top = 24.dp)
         ) {
-            Text("Login")
+            Text("Create Account")
         }
 
         OutlinedButton(
-            onClick = onNavigateToSignUp,
+            onClick = onBack,
             modifier = Modifier.padding(top = 12.dp)
         ) {
-            Text("Create Account")
+            Text("Back to Login")
         }
     }
 }

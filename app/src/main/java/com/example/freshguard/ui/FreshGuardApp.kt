@@ -25,6 +25,7 @@ import com.example.freshguard.ui.screens.discover.DiscoverScreen
 import com.example.freshguard.ui.screens.home.HomeScreen
 import com.example.freshguard.ui.screens.profile.ProfileScreen
 import com.example.freshguard.ui.screens.stats.StatsScreen
+import com.example.freshguard.ui.screens.auth.SignUpScreen
 
 @Composable
 fun FreshGuardApp() {
@@ -90,6 +91,22 @@ fun FreshGuardApp() {
                         navController.navigate(Screen.Home.route) {
                             popUpTo(Screen.Login.route) { inclusive = true }
                         }
+                    },
+                    onNavigateToSignUp = {
+                        navController.navigate(Screen.SignUp.route)
+                    }
+                )
+            }
+
+            composable(Screen.SignUp.route) {
+                SignUpScreen(
+                    onCreateAccount = {
+                        navController.navigate(Screen.Home.route) {
+                            popUpTo(Screen.Login.route) { inclusive = true }
+                        }
+                    },
+                    onBack = {
+                        navController.popBackStack()
                     }
                 )
             }
