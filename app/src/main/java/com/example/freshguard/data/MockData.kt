@@ -6,6 +6,7 @@ object MockData {
         FoodListing(
             id = "milk_001",
             title = "Milk",
+            donorName = "Maya Chen",
             category = "Dairy",
             quantity = "2 bottles",
             expiryText = "Expires tonight",
@@ -18,6 +19,7 @@ object MockData {
         FoodListing(
             id = "banana_002",
             title = "Bananas",
+            donorName = "Liam Foster",
             category = "Fruit",
             quantity = "6 pieces",
             expiryText = "Best within 1 day",
@@ -30,6 +32,7 @@ object MockData {
         FoodListing(
             id = "sandwich_003",
             title = "Sandwiches",
+            donorName = "Nina Patel",
             category = "Prepared Meals",
             quantity = "3 packs",
             expiryText = "Urgent pickup today",
@@ -42,6 +45,7 @@ object MockData {
         FoodListing(
             id = "bread_004",
             title = "Wholemeal Bread",
+            donorName = "Oliver Tan",
             category = "Bakery",
             quantity = "1 loaf",
             expiryText = "Use within 2 days",
@@ -57,6 +61,7 @@ object MockData {
         FoodListing(
             id = "yogurt_101",
             title = "Greek Yogurt",
+            donorName = "Sophie Nguyen",
             category = "Dairy",
             quantity = "4 cups",
             expiryText = "Best before tomorrow",
@@ -69,6 +74,7 @@ object MockData {
         FoodListing(
             id = "muffin_102",
             title = "Blueberry Muffins",
+            donorName = "Ava Robinson",
             category = "Bakery",
             quantity = "5 pieces",
             expiryText = "Best today",
@@ -81,6 +87,7 @@ object MockData {
         FoodListing(
             id = "salad_103",
             title = "Garden Salad",
+            donorName = "Marcus Lee",
             category = "Prepared Meals",
             quantity = "2 bowls",
             expiryText = "Pickup within 4 hours",
@@ -93,6 +100,7 @@ object MockData {
         FoodListing(
             id = "apple_104",
             title = "Apples",
+            donorName = "Ella Martin",
             category = "Fruit",
             quantity = "8 pieces",
             expiryText = "Good for 3 more days",
@@ -105,6 +113,7 @@ object MockData {
         FoodListing(
             id = "rice_105",
             title = "Cooked Rice",
+            donorName = "Zoe Walker",
             category = "Prepared Meals",
             quantity = "2 containers",
             expiryText = "Pickup tonight",
@@ -120,5 +129,34 @@ object MockData {
 
     fun findListingById(listingId: String): FoodListing? {
         return allListings.find { it.id == listingId }
+    }
+
+    fun chatMessagesFor(listingId: String): List<ChatMessage> {
+        val listing = findListingById(listingId)
+        val donorName = listing?.donorName ?: "FreshGuard Donor"
+
+        return listOf(
+            ChatMessage(
+                id = "${listingId}_1",
+                senderName = donorName,
+                content = "Hi! This listing is still available if you can collect it during the posted pickup window.",
+                timestamp = "5:12 PM",
+                isCurrentUser = false
+            ),
+            ChatMessage(
+                id = "${listingId}_2",
+                senderName = "You",
+                content = "Thanks, I am nearby and should be able to reach the pickup point in about 20 minutes.",
+                timestamp = "5:14 PM",
+                isCurrentUser = true
+            ),
+            ChatMessage(
+                id = "${listingId}_3",
+                senderName = donorName,
+                content = "Great. Please message me when you arrive so I can bring the food down straight away.",
+                timestamp = "5:15 PM",
+                isCurrentUser = false
+            )
+        )
     }
 }

@@ -19,6 +19,11 @@ sealed class Screen(val route: String) {
             return "listing_detail/$listingId"
         }
     }
+    data object Chat : Screen("chat/{listingId}") {
+        fun createRoute(listingId: String): String {
+            return "chat/$listingId"
+        }
+    }
     data object Discover : Screen("discover")
     data object Stats : Screen("stats")
     data object Profile : Screen("profile")

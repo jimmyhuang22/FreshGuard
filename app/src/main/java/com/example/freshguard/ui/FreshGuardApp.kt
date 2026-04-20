@@ -24,6 +24,7 @@ import com.example.freshguard.navigation.BottomNavItem
 import com.example.freshguard.navigation.Screen
 import com.example.freshguard.ui.screens.auth.LoginScreen
 import com.example.freshguard.ui.screens.auth.SignUpScreen
+import com.example.freshguard.ui.screens.chat.ChatScreen
 import com.example.freshguard.ui.screens.discover.DiscoverScreen
 import com.example.freshguard.ui.screens.home.HomeScreen
 import com.example.freshguard.ui.screens.listings.AddEditListingScreen
@@ -188,6 +189,27 @@ fun FreshGuardApp() {
                 val listingId = backStackEntry.arguments?.getString("listingId").orEmpty()
 
                 ListingDetailScreen(
+                    listingId = listingId,
+                    onBack = {
+                        navController.popBackStack()
+                    },
+                    onOpenChat = { chatListingId ->
+                        navController.navigate(Screen.Chat.createRoute(chatListingId))
+                    }
+                )
+            }
+
+            composable(
+                route = Screen.Chat.route,
+                arguments = listOf(
+                    navArgument("listingId") {
+                        type = NavType.StringType
+                    }
+                )
+            ) { backStackEntry ->
+                val listingId = backStackEntry.arguments?.getString("listingId").orEmpty()
+
+                ChatScreen(
                     listingId = listingId,
                     onBack = {
                         navController.popBackStack()

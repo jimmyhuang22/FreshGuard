@@ -3,6 +3,7 @@ package com.example.freshguard.data
 data class FoodListing(
     val id: String,
     val title: String,
+    val donorName: String = "FreshGuard Donor",
     val category: String = "",
     val quantity: String,
     val expiryText: String,
