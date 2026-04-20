@@ -14,16 +14,20 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
+import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
+import androidx.navigation.navArgument
 import com.example.freshguard.navigation.BottomNavItem
 import com.example.freshguard.navigation.Screen
 import com.example.freshguard.ui.screens.auth.LoginScreen
 import com.example.freshguard.ui.screens.auth.SignUpScreen
 import com.example.freshguard.ui.screens.discover.DiscoverScreen
 import com.example.freshguard.ui.screens.home.HomeScreen
+import com.example.freshguard.ui.screens.listings.ListingDetailScreen
+import com.example.freshguard.ui.screens.listings.MyListingsScreen
 import com.example.freshguard.ui.screens.profile.ProfileScreen
 import com.example.freshguard.ui.screens.stats.StatsScreen
 
@@ -116,11 +120,43 @@ fun FreshGuardApp() {
                     onOpenDiscover = {
                         navController.navigate(Screen.Discover.route)
                     },
+                    onOpenMyListings = {
+                        navController.navigate(Screen.MyListings.route)
+                    },
                     onOpenStats = {
                         navController.navigate(Screen.Stats.route)
                     },
                     onOpenProfile = {
                         navController.navigate(Screen.Profile.route)
+                    }
+                )
+            }
+
+            composable(Screen.MyListings.route) {
+                MyListingsScreen(
+                    onBack = {
+                        navController.popBackStack()
+                    },
+                    onOpenDetail = { listingId ->
+                        navController.navigate(Screen.ListingDetail.createRoute(listingId))
+                    }
+                )
+            }
+
+            composable(
+                route = Screen.ListingDetail.route,
+                arguments = listOf(
+                    navArgument("listingId") {
+                        type = NavType.StringType
+                    }
+                )
+            ) { backStackEntry ->
+                val listingId = backStackEntry.arguments?.getString("listingId").orEmpty()
+
+                ListingDetailScreen(
+                    listingId = listingId,
+                    onBack = {
+                        navController.popBackStack()
                     }
                 )
             }

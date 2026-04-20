@@ -9,6 +9,7 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.BarChart
+import androidx.compose.material.icons.filled.Home
 import androidx.compose.material.icons.filled.Person
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.material3.Card
@@ -24,6 +25,7 @@ import com.example.freshguard.ui.components.HomeQuickActionCard
 @Composable
 fun HomeScreen(
     onOpenDiscover: () -> Unit,
+    onOpenMyListings: () -> Unit,
     onOpenStats: () -> Unit,
     onOpenProfile: () -> Unit
 ) {
@@ -71,20 +73,34 @@ fun HomeScreen(
                 )
 
                 HomeQuickActionCard(
+                    title = "My Listings",
+                    subtitle = "Manage your food posts",
+                    icon = Icons.Default.Home,
+                    onClick = onOpenMyListings,
+                    modifier = Modifier.weight(1f)
+                )
+            }
+
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.spacedBy(12.dp)
+            ) {
+                HomeQuickActionCard(
                     title = "Stats",
                     subtitle = "View your rescue progress",
                     icon = Icons.Default.BarChart,
                     onClick = onOpenStats,
                     modifier = Modifier.weight(1f)
                 )
-            }
 
-            HomeQuickActionCard(
-                title = "Profile",
-                subtitle = "Update your preferences and account settings",
-                icon = Icons.Default.Person,
-                onClick = onOpenProfile
-            )
+                HomeQuickActionCard(
+                    title = "Profile",
+                    subtitle = "Update your preferences",
+                    icon = Icons.Default.Person,
+                    onClick = onOpenProfile,
+                    modifier = Modifier.weight(1f)
+                )
+            }
         }
 
         Column(
