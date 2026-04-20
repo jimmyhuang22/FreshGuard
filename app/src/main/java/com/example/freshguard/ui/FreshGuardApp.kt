@@ -112,7 +112,17 @@ fun FreshGuardApp() {
             }
 
             composable(Screen.Home.route) {
-                HomeScreen()
+                HomeScreen(
+                    onOpenDiscover = {
+                        navController.navigate(Screen.Discover.route)
+                    },
+                    onOpenStats = {
+                        navController.navigate(Screen.Stats.route)
+                    },
+                    onOpenProfile = {
+                        navController.navigate(Screen.Profile.route)
+                    }
+                )
             }
 
             composable(Screen.Discover.route) {
