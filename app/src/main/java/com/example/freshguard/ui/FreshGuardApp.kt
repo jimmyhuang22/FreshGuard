@@ -155,7 +155,10 @@ fun FreshGuardApp() {
                     onBack = {
                         navController.popBackStack()
                     },
-                    onSave = {
+                    onSaveDraft = {
+                        navController.popBackStack()
+                    },
+                    onPublish = {
                         navController.popBackStack()
                     }
                 )

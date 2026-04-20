@@ -1,20 +1,45 @@
 package com.example.freshguard.ui.components
 
+import androidx.compose.foundation.layout.ColumnScope
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 
 @Composable
 fun FormSection(
+    title: String,
     modifier: Modifier = Modifier,
-    content: @Composable () -> Unit
+    description: String? = null,
+    content: @Composable ColumnScope.() -> Unit
 ) {
-    Column(
+    FreshGuardCard(
         modifier = modifier,
-        verticalArrangement = Arrangement.spacedBy(12.dp)
+        contentSpacing = 14.dp
     ) {
-        content()
+        Column(
+            verticalArrangement = Arrangement.spacedBy(4.dp)
+        ) {
+            Text(
+                text = title,
+                style = MaterialTheme.typography.titleMedium
+            )
+
+            if (description != null) {
+                Text(
+                    text = description,
+                    style = MaterialTheme.typography.bodySmall,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant
+                )
+            }
+        }
+
+        Column(
+            verticalArrangement = Arrangement.spacedBy(12.dp),
+            content = content
+        )
     }
 }

@@ -1,43 +1,89 @@
 package com.example.freshguard.ui.screens.listings
 
+import android.app.DatePickerDialog
+import android.app.TimePickerDialog
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.WindowInsets
+import androidx.compose.foundation.layout.asPaddingValues
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.ime
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.CalendarMonth
+import androidx.compose.material.icons.filled.Schedule
 import androidx.compose.material3.Button
+import androidx.compose.material3.Checkbox
+import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.OutlinedTextField
+import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import com.example.freshguard.ui.components.FreshGuardTopBar
 import com.example.freshguard.ui.components.FormSection
 import com.example.freshguard.ui.components.SimpleDropdownField
+import com.example.freshguard.ui.theme.FreshGuardTheme
+import java.text.SimpleDateFormat
+import java.util.Calendar
+import java.util.Locale
 
 @Composable
 fun AddEditListingScreen(
     onBack: () -> Unit,
-    onSave: () -> Unit
+    onSaveDraft: () -> Unit,
+    onPublish: () -> Unit
 ) {
     val scrollState = rememberScrollState()
+    val context = LocalContext.current
 
-    var foodName by remember { mutableStateOf("") }
-    var category by remember { mutableStateOf("Dairy") }
-    var quantity by remember { mutableStateOf("") }
-    var expiryDate by remember { mutableStateOf("") }
-    var expiryTime by remember { mutableStateOf("") }
-    var pickupLocation by remember { mutableStateOf("") }
-    var notes by remember { mutableStateOf("") }
+    val expiryCalendar = remember {
+        Calendar.getInstance().apply {
+            add(Calendar.DAY_OF_MONTH, 1)
+        }
+    }
+    val pickupCalendar = remember {
+        Calendar.getInstance().apply {
+            set(Calendar.HOUR_OF_DAY, 18)
+            set(Calendar.MINUTE, 30)
+        }
+    }
+
+    var itemName by rememberSaveable { mutableStateOf("Vegetable curry") }
+    var category by rememberSaveable { mutableStateOf("Prepared Meals") }
+    var quantity by rememberSaveable { mutableStateOf("4 portions") }
+    var urgency by rememberSaveable { mutableStateOf("Donate Soon") }
+    var storageMethod by rememberSaveable { mutableStateOf("Refrigerated") }
+    var expiryDate by rememberSaveable { mutableStateOf(formatDate(expiryCalendar)) }
+    var pickupDate by rememberSaveable { mutableStateOf(formatDate(pickupCalendar)) }
+    var pickupTime by rememberSaveable { mutableStateOf(formatTime(pickupCalendar)) }
+    var pickupLocation by rememberSaveable { mutableStateOf("Clayton campus south entrance") }
+    var notes by rememberSaveable {
+        mutableStateOf("Cooked at lunch, cooled quickly, and stored in sealed containers.")
+    }
+    var foodSafetyConfirmed by rememberSaveable { mutableStateOf(true) }
 
     val categoryOptions = listOf(
         "Dairy",
@@ -48,97 +94,289 @@ fun AddEditListingScreen(
         "Snacks",
         "Beverages"
     )
+    val urgencyOptions = listOf(
+        "Urgent",
+        "Donate Soon",
+        "Safe"
+    )
+    val storageOptions = listOf(
+        "Room temperature",
+        "Refrigerated",
+        "Frozen",
+        "Insulated transport needed"
+    )
 
-    Column(
-        modifier = Modifier
-            .fillMaxSize()
-            .verticalScroll(scrollState)
-            .padding(24.dp),
-        verticalArrangement = Arrangement.spacedBy(20.dp)
-    ) {
-        Text(
-            text = "Add / Edit Listing",
-            style = MaterialTheme.typography.headlineMedium
-        )
+    val openExpiryDatePicker = {
+        DatePickerDialog(
+            context,
+            { _, year, month, dayOfMonth ->
+                expiryCalendar.set(year, month, dayOfMonth)
+                expiryDate = formatDate(expiryCalendar)
+            },
+            expiryCalendar.get(Calendar.YEAR),
+            expiryCalendar.get(Calendar.MONTH),
+            expiryCalendar.get(Calendar.DAY_OF_MONTH)
+        ).show()
+    }
 
-        Text(
-            text = "Create a food listing using a simple, structured form.",
-            style = MaterialTheme.typography.bodyLarge
-        )
+    val openPickupDatePicker = {
+        DatePickerDialog(
+            context,
+            { _, year, month, dayOfMonth ->
+                pickupCalendar.set(year, month, dayOfMonth)
+                pickupDate = formatDate(pickupCalendar)
+            },
+            pickupCalendar.get(Calendar.YEAR),
+            pickupCalendar.get(Calendar.MONTH),
+            pickupCalendar.get(Calendar.DAY_OF_MONTH)
+        ).show()
+    }
 
-        FormSection {
-            OutlinedTextField(
-                value = foodName,
-                onValueChange = { foodName = it },
-                label = { Text("Food name") },
-                modifier = Modifier.fillMaxWidth()
-            )
+    val openPickupTimePicker = {
+        TimePickerDialog(
+            context,
+            { _, hourOfDay, minute ->
+                pickupCalendar.set(Calendar.HOUR_OF_DAY, hourOfDay)
+                pickupCalendar.set(Calendar.MINUTE, minute)
+                pickupTime = formatTime(pickupCalendar)
+            },
+            pickupCalendar.get(Calendar.HOUR_OF_DAY),
+            pickupCalendar.get(Calendar.MINUTE),
+            false
+        ).show()
+    }
 
-            SimpleDropdownField(
-                label = "Category",
-                selectedValue = category,
-                options = categoryOptions,
-                onValueSelected = { category = it }
-            )
-
-            OutlinedTextField(
-                value = quantity,
-                onValueChange = { quantity = it },
-                label = { Text("Quantity") },
-                modifier = Modifier.fillMaxWidth()
-            )
-        }
-
-        FormSection {
-            OutlinedTextField(
-                value = expiryDate,
-                onValueChange = { expiryDate = it },
-                label = { Text("Expiry date (e.g. 20 Apr 2026)") },
-                modifier = Modifier.fillMaxWidth()
-            )
-
-            OutlinedTextField(
-                value = expiryTime,
-                onValueChange = { expiryTime = it },
-                label = { Text("Expiry time (e.g. 8:00 PM)") },
-                modifier = Modifier.fillMaxWidth()
-            )
-
-            OutlinedTextField(
-                value = pickupLocation,
-                onValueChange = { pickupLocation = it },
-                label = { Text("Pickup suburb / location") },
-                modifier = Modifier.fillMaxWidth()
+    Scaffold(
+        containerColor = MaterialTheme.colorScheme.background,
+        topBar = {
+            FreshGuardTopBar(
+                title = "Add or Edit Listing",
+                onBackClick = onBack
             )
         }
-
-        FormSection {
-            OutlinedTextField(
-                value = notes,
-                onValueChange = { notes = it },
-                label = { Text("Notes") },
-                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Text),
-                modifier = Modifier
-                    .fillMaxWidth()
-            )
-        }
-
+    ) { innerPadding ->
         Column(
-            verticalArrangement = Arrangement.spacedBy(12.dp)
+            modifier = Modifier
+                .fillMaxSize()
+                .verticalScroll(scrollState)
+                .padding(innerPadding)
+                .padding(horizontal = 24.dp, vertical = 20.dp)
+                .padding(bottom = WindowInsets.ime.asPaddingValues().calculateBottomPadding()),
+            verticalArrangement = Arrangement.spacedBy(20.dp)
         ) {
-            Button(
-                onClick = onSave,
-                modifier = Modifier.fillMaxWidth()
+            Column(
+                verticalArrangement = Arrangement.spacedBy(8.dp)
             ) {
-                Text("Save Listing")
+                Text(
+                    text = "Create a clear donation listing",
+                    style = MaterialTheme.typography.headlineMedium
+                )
+
+                Text(
+                    text = "Use familiar labels, structured sections, and visible safety details so donors and receivers can understand the listing at a glance.",
+                    style = MaterialTheme.typography.bodyLarge,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant
+                )
             }
 
-            OutlinedButton(
-                onClick = onBack,
-                modifier = Modifier.fillMaxWidth()
+            FormSection(
+                title = "Section A: Item Details",
+                description = "Start with the essentials a receiver needs before deciding whether to open the listing."
             ) {
-                Text("Cancel")
+                OutlinedTextField(
+                    value = itemName,
+                    onValueChange = { itemName = it },
+                    label = { Text("Item name") },
+                    modifier = Modifier.fillMaxWidth(),
+                    singleLine = true,
+                    keyboardOptions = KeyboardOptions(imeAction = ImeAction.Next)
+                )
+
+                SimpleDropdownField(
+                    label = "Category",
+                    selectedValue = category,
+                    options = categoryOptions,
+                    onValueSelected = { category = it }
+                )
+
+                OutlinedTextField(
+                    value = quantity,
+                    onValueChange = { quantity = it },
+                    label = { Text("Quantity or portions") },
+                    modifier = Modifier.fillMaxWidth(),
+                    singleLine = true,
+                    keyboardOptions = KeyboardOptions(imeAction = ImeAction.Next)
+                )
+
+                SimpleDropdownField(
+                    label = "Urgency level",
+                    selectedValue = urgency,
+                    options = urgencyOptions,
+                    onValueSelected = { urgency = it }
+                )
             }
+
+            FormSection(
+                title = "Section B: Storage & Safety",
+                description = "Highlight storage conditions and confirm the food is still suitable for donation."
+            ) {
+                SimpleDropdownField(
+                    label = "Storage method",
+                    selectedValue = storageMethod,
+                    options = storageOptions,
+                    onValueSelected = { storageMethod = it }
+                )
+
+                PickerField(
+                    label = "Expiry or use-by date",
+                    value = expiryDate,
+                    icon = Icons.Default.CalendarMonth,
+                    onClick = openExpiryDatePicker
+                )
+
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    verticalAlignment = Alignment.Top
+                ) {
+                    Checkbox(
+                        checked = foodSafetyConfirmed,
+                        onCheckedChange = { foodSafetyConfirmed = it }
+                    )
+
+                    Column(
+                        modifier = Modifier
+                            .weight(1f)
+                            .padding(top = 10.dp),
+                        verticalArrangement = Arrangement.spacedBy(4.dp)
+                    ) {
+                        Text(
+                            text = "Food safety checked",
+                            style = MaterialTheme.typography.titleSmall
+                        )
+                        Text(
+                            text = "I have stored this food correctly, checked packaging, and would feel comfortable donating it to another person.",
+                            style = MaterialTheme.typography.bodySmall,
+                            color = MaterialTheme.colorScheme.onSurfaceVariant
+                        )
+                    }
+                }
+
+                OutlinedTextField(
+                    value = notes,
+                    onValueChange = { notes = it },
+                    label = { Text("Notes for freshness and handling") },
+                    modifier = Modifier.fillMaxWidth(),
+                    minLines = 3,
+                    keyboardOptions = KeyboardOptions(
+                        keyboardType = KeyboardType.Text,
+                        imeAction = ImeAction.Default
+                    )
+                )
+            }
+
+            FormSection(
+                title = "Section C: Pickup Details",
+                description = "Make collection planning easy with a clear date, time, and location."
+            ) {
+                PickerField(
+                    label = "Pickup date",
+                    value = pickupDate,
+                    icon = Icons.Default.CalendarMonth,
+                    onClick = openPickupDatePicker
+                )
+
+                PickerField(
+                    label = "Pickup time",
+                    value = pickupTime,
+                    icon = Icons.Default.Schedule,
+                    onClick = openPickupTimePicker
+                )
+
+                OutlinedTextField(
+                    value = pickupLocation,
+                    onValueChange = { pickupLocation = it },
+                    label = { Text("Pickup location") },
+                    modifier = Modifier.fillMaxWidth(),
+                    minLines = 2,
+                    keyboardOptions = KeyboardOptions(imeAction = ImeAction.Done)
+                )
+            }
+
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.spacedBy(12.dp)
+            ) {
+                OutlinedButton(
+                    onClick = onSaveDraft,
+                    modifier = Modifier.weight(1f)
+                ) {
+                    Text("Save Draft")
+                }
+
+                Button(
+                    onClick = onPublish,
+                    modifier = Modifier.weight(1f)
+                ) {
+                    Text("Publish Listing")
+                }
+            }
+
+            Spacer(modifier = Modifier.height(8.dp))
         }
+    }
+}
+
+@Composable
+private fun PickerField(
+    label: String,
+    value: String,
+    icon: ImageVector,
+    modifier: Modifier = Modifier,
+    onClick: () -> Unit
+) {
+    androidx.compose.foundation.layout.Box(
+        modifier = modifier.fillMaxWidth()
+    ) {
+        OutlinedTextField(
+            value = value,
+            onValueChange = {},
+            modifier = Modifier.fillMaxWidth(),
+            readOnly = true,
+            label = { Text(label) },
+            trailingIcon = {
+                Icon(
+                    imageVector = icon,
+                    contentDescription = null
+                )
+            }
+        )
+
+        androidx.compose.foundation.layout.Box(
+            modifier = Modifier
+                .fillMaxSize()
+                .clickable(onClick = onClick)
+        )
+    }
+}
+
+private fun formatDate(calendar: Calendar): String {
+    val formatter = SimpleDateFormat("EEE, d MMM yyyy", Locale.ENGLISH)
+    return formatter.format(calendar.time)
+}
+
+private fun formatTime(calendar: Calendar): String {
+    val formatter = SimpleDateFormat("h:mm a", Locale.ENGLISH)
+    return formatter.format(calendar.time)
+}
+
+@Preview(showBackground = true)
+@Composable
+private fun AddEditListingScreenPreview() {
+    FreshGuardTheme {
+        AddEditListingScreen(
+            onBack = {},
+            onSaveDraft = {},
+            onPublish = {}
+        )
     }
 }
