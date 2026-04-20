@@ -127,11 +127,8 @@ fun FreshGuardApp() {
                     onOpenAddListing = {
                         navController.navigate(Screen.AddEditListing.route)
                     },
-                    onOpenStats = {
-                        navController.navigate(Screen.Stats.route)
-                    },
-                    onOpenProfile = {
-                        navController.navigate(Screen.Profile.route)
+                    onOpenListingDetail = { listingId ->
+                        navController.navigate(Screen.ListingDetail.createRoute(listingId))
                     }
                 )
             }
