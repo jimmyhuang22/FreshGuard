@@ -180,7 +180,11 @@ fun FreshGuardApp() {
             }
 
             composable(Screen.Discover.route) {
-                DiscoverScreen()
+                DiscoverScreen(
+                    onOpenDetail = { listingId ->
+                        navController.navigate(Screen.ListingDetail.createRoute(listingId))
+                    }
+                )
             }
 
             composable(Screen.Stats.route) {
