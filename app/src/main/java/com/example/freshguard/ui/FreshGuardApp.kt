@@ -125,7 +125,7 @@ fun FreshGuardApp() {
                         navController.navigate(Screen.MyListings.route)
                     },
                     onOpenAddListing = {
-                        navController.navigate(Screen.AddEditListing.route)
+                        navController.navigate(Screen.AddEditListing.createRoute())
                     },
                     onOpenListingDetail = { listingId ->
                         navController.navigate(Screen.ListingDetail.createRoute(listingId))
@@ -139,16 +139,32 @@ fun FreshGuardApp() {
                         navController.popBackStack()
                     },
                     onAddListing = {
-                        navController.navigate(Screen.AddEditListing.route)
+                        navController.navigate(Screen.AddEditListing.createRoute())
                     },
                     onOpenDetail = { listingId ->
                         navController.navigate(Screen.ListingDetail.createRoute(listingId))
+                    },
+                    onEditListing = { listingId ->
+                        navController.navigate(Screen.AddEditListing.createRoute(listingId))
                     }
                 )
             }
 
-            composable(Screen.AddEditListing.route) {
+            composable(
+                route = Screen.AddEditListing.route,
+                arguments = listOf(
+                    navArgument("listingId") {
+                        type = NavType.StringType
+                        defaultValue = ""
+                    }
+                )
+            ) { backStackEntry ->
+                val listingId = backStackEntry.arguments
+                    ?.getString("listingId")
+                    ?.takeIf { it.isNotBlank() }
+
                 AddEditListingScreen(
+                    listingId = listingId,
                     onBack = {
                         navController.popBackStack()
                     },

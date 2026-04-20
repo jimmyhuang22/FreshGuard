@@ -42,6 +42,7 @@ import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import com.example.freshguard.data.MockData
 import com.example.freshguard.ui.components.FreshGuardTopBar
 import com.example.freshguard.ui.components.FormSection
 import com.example.freshguard.ui.components.SimpleDropdownField
@@ -52,12 +53,16 @@ import java.util.Locale
 
 @Composable
 fun AddEditListingScreen(
+    listingId: String?,
     onBack: () -> Unit,
     onSaveDraft: () -> Unit,
     onPublish: () -> Unit
 ) {
     val scrollState = rememberScrollState()
     val context = LocalContext.current
+    val existingListing = remember(listingId) {
+        listingId?.let { MockData.findListingById(it) }
+    }
 
     val expiryCalendar = remember {
         Calendar.getInstance().apply {
@@ -71,17 +76,21 @@ fun AddEditListingScreen(
         }
     }
 
-    var itemName by rememberSaveable { mutableStateOf("Vegetable curry") }
-    var category by rememberSaveable { mutableStateOf("Prepared Meals") }
-    var quantity by rememberSaveable { mutableStateOf("4 portions") }
-    var urgency by rememberSaveable { mutableStateOf("Donate Soon") }
+    var itemName by rememberSaveable(listingId) { mutableStateOf(existingListing?.title ?: "Vegetable curry") }
+    var category by rememberSaveable(listingId) { mutableStateOf(existingListing?.category ?: "Prepared Meals") }
+    var quantity by rememberSaveable(listingId) { mutableStateOf(existingListing?.quantity ?: "4 portions") }
+    var urgency by rememberSaveable(listingId) {
+        mutableStateOf(existingListing?.let(::editableUrgencyValue) ?: "Donate Soon")
+    }
     var storageMethod by rememberSaveable { mutableStateOf("Refrigerated") }
     var expiryDate by rememberSaveable { mutableStateOf(formatDate(expiryCalendar)) }
     var pickupDate by rememberSaveable { mutableStateOf(formatDate(pickupCalendar)) }
     var pickupTime by rememberSaveable { mutableStateOf(formatTime(pickupCalendar)) }
-    var pickupLocation by rememberSaveable { mutableStateOf("Clayton campus south entrance") }
+    var pickupLocation by rememberSaveable(listingId) {
+        mutableStateOf(existingListing?.pickupLocation ?: "Clayton campus south entrance")
+    }
     var notes by rememberSaveable {
-        mutableStateOf("Cooked at lunch, cooled quickly, and stored in sealed containers.")
+        mutableStateOf(existingListing?.notes ?: "Cooked at lunch, cooled quickly, and stored in sealed containers.")
     }
     var foodSafetyConfirmed by rememberSaveable { mutableStateOf(true) }
 
@@ -150,7 +159,7 @@ fun AddEditListingScreen(
         containerColor = MaterialTheme.colorScheme.background,
         topBar = {
             FreshGuardTopBar(
-                title = "Add or Edit Listing",
+                title = if (existingListing == null) "Add Listing" else "Edit Listing",
                 onBackClick = onBack
             )
         }
@@ -168,7 +177,11 @@ fun AddEditListingScreen(
                 verticalArrangement = Arrangement.spacedBy(8.dp)
             ) {
                 Text(
-                    text = "Create a clear donation listing",
+                    text = if (existingListing == null) {
+                        "Create a clear donation listing"
+                    } else {
+                        "Update an existing donation listing"
+                    },
                     style = MaterialTheme.typography.headlineMedium
                 )
 
@@ -374,9 +387,18 @@ private fun formatTime(calendar: Calendar): String {
 private fun AddEditListingScreenPreview() {
     FreshGuardTheme {
         AddEditListingScreen(
+            listingId = null,
             onBack = {},
             onSaveDraft = {},
             onPublish = {}
         )
+    }
+}
+
+private fun editableUrgencyValue(listing: com.example.freshguard.data.FoodListing): String {
+    return when (listing.urgency.lowercase()) {
+        "high", "urgent" -> "Urgent"
+        "medium", "donate soon" -> "Donate Soon"
+        else -> "Safe"
     }
 }
