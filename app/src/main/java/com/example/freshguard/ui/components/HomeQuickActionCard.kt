@@ -3,8 +3,6 @@ package com.example.freshguard.ui.components
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.padding
-import androidx.compose.material3.Card
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
@@ -21,17 +19,17 @@ fun HomeQuickActionCard(
     onClick: () -> Unit,
     modifier: Modifier = Modifier
 ) {
-    Card(
-        onClick = onClick,
-        modifier = modifier.fillMaxWidth()
+    FreshGuardCard(
+        modifier = modifier.fillMaxWidth(),
+        onClick = onClick
     ) {
         Column(
-            modifier = Modifier.padding(16.dp),
             verticalArrangement = Arrangement.spacedBy(10.dp)
         ) {
             Icon(
                 imageVector = icon,
-                contentDescription = title
+                contentDescription = title,
+                tint = MaterialTheme.colorScheme.primary
             )
 
             Text(

@@ -2,9 +2,10 @@ package com.example.freshguard.ui.components
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.padding
-import androidx.compose.material3.Card
+import androidx.compose.foundation.layout.width
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -18,19 +19,26 @@ fun FoodListingCard(
     onClick: () -> Unit,
     modifier: Modifier = Modifier
 ) {
-    Card(
+    FreshGuardCard(
+        modifier = modifier.fillMaxWidth(),
         onClick = onClick,
-        modifier = modifier.fillMaxWidth()
+        contentSpacing = 8.dp
     ) {
-        Column(
-            modifier = Modifier.padding(16.dp),
-            verticalArrangement = Arrangement.spacedBy(6.dp)
-        ) {
+        Row {
             Text(
                 text = listing.title,
-                style = MaterialTheme.typography.titleMedium
+                style = MaterialTheme.typography.titleMedium,
+                modifier = Modifier.weight(1f)
             )
 
+            Spacer(modifier = Modifier.width(12.dp))
+
+            UrgencyChip(urgency = listing.urgency)
+        }
+
+        Column(
+            verticalArrangement = Arrangement.spacedBy(6.dp)
+        ) {
             Text(
                 text = "Quantity: ${listing.quantity}",
                 style = MaterialTheme.typography.bodyMedium
@@ -48,7 +56,14 @@ fun FoodListingCard(
 
             Text(
                 text = "Urgency: ${listing.urgency}",
-                style = MaterialTheme.typography.bodyMedium
+                style = MaterialTheme.typography.bodyMedium,
+                color = MaterialTheme.colorScheme.onSurfaceVariant
+            )
+
+            Text(
+                text = listing.notes,
+                style = MaterialTheme.typography.bodySmall,
+                color = MaterialTheme.colorScheme.onSurfaceVariant
             )
         }
     }

@@ -1,58 +1,65 @@
 package com.example.freshguard.ui.theme
 
-import android.app.Activity
-import android.os.Build
-import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.darkColorScheme
-import androidx.compose.material3.dynamicDarkColorScheme
-import androidx.compose.material3.dynamicLightColorScheme
 import androidx.compose.material3.lightColorScheme
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.platform.LocalContext
-
-private val DarkColorScheme = darkColorScheme(
-    primary = Purple80,
-    secondary = PurpleGrey80,
-    tertiary = Pink80
-)
 
 private val LightColorScheme = lightColorScheme(
-    primary = Purple40,
-    secondary = PurpleGrey40,
-    tertiary = Pink40
+    primary = FreshGuardGreen,
+    onPrimary = FreshGuardSurface,
+    primaryContainer = FreshGuardGreenContainer,
+    onPrimaryContainer = FreshGuardGreenDark,
+    secondary = FreshGuardLavender,
+    onSecondary = FreshGuardSurface,
+    secondaryContainer = FreshGuardLavenderContainer,
+    onSecondaryContainer = FreshGuardLavenderDark,
+    tertiary = FreshGuardWarm,
+    onTertiary = FreshGuardSurface,
+    tertiaryContainer = FreshGuardWarmContainer,
+    onTertiaryContainer = FreshGuardWarmText,
+    background = FreshGuardBackground,
+    onBackground = FreshGuardGreenDark,
+    surface = FreshGuardSurface,
+    onSurface = FreshGuardGreenDark,
+    surfaceVariant = FreshGuardSurfaceVariant,
+    onSurfaceVariant = FreshGuardLavenderDark,
+    outline = FreshGuardOutline
+)
 
-    /* Other default colors to override
-    background = Color(0xFFFFFBFE),
-    surface = Color(0xFFFFFBFE),
-    onPrimary = Color.White,
-    onSecondary = Color.White,
-    onTertiary = Color.White,
-    onBackground = Color(0xFF1C1B1F),
-    onSurface = Color(0xFF1C1B1F),
-    */
+private val DarkColorScheme = darkColorScheme(
+    primary = FreshGuardGreenContainer,
+    onPrimary = FreshGuardGreenDark,
+    primaryContainer = FreshGuardGreen,
+    onPrimaryContainer = FreshGuardSurface,
+    secondary = FreshGuardLavenderContainer,
+    onSecondary = FreshGuardLavenderDark,
+    secondaryContainer = FreshGuardLavender,
+    onSecondaryContainer = FreshGuardSurface,
+    tertiary = FreshGuardWarmContainer,
+    onTertiary = FreshGuardWarmText,
+    tertiaryContainer = FreshGuardWarm,
+    onTertiaryContainer = FreshGuardSurface,
+    background = FreshGuardDarkBackground,
+    onBackground = FreshGuardSurface,
+    surface = FreshGuardDarkSurface,
+    onSurface = FreshGuardSurface,
+    surfaceVariant = FreshGuardDarkSurfaceVariant,
+    onSurfaceVariant = FreshGuardLavenderContainer,
+    outline = FreshGuardDarkOutline
 )
 
 @Composable
 fun FreshGuardTheme(
-    darkTheme: Boolean = isSystemInDarkTheme(),
-    // Dynamic color is available on Android 12+
-    dynamicColor: Boolean = true,
+    darkTheme: Boolean = false,
     content: @Composable () -> Unit
 ) {
-    val colorScheme = when {
-        dynamicColor && Build.VERSION.SDK_INT >= Build.VERSION_CODES.S -> {
-            val context = LocalContext.current
-            if (darkTheme) dynamicDarkColorScheme(context) else dynamicLightColorScheme(context)
-        }
-
-        darkTheme -> DarkColorScheme
-        else -> LightColorScheme
-    }
+    val colorScheme = if (darkTheme) DarkColorScheme else LightColorScheme
 
     MaterialTheme(
         colorScheme = colorScheme,
         typography = Typography,
+        shapes = FreshGuardShapes,
         content = content
     )
 }
