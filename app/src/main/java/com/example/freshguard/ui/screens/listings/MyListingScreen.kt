@@ -4,10 +4,12 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.weight
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.material3.Button
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Text
@@ -20,6 +22,7 @@ import com.example.freshguard.ui.components.FoodListingCard
 @Composable
 fun MyListingsScreen(
     onBack: () -> Unit,
+    onAddListing: () -> Unit,
     onOpenDetail: (String) -> Unit
 ) {
     Column(
@@ -38,8 +41,16 @@ fun MyListingsScreen(
             style = MaterialTheme.typography.bodyLarge
         )
 
+        Button(
+            onClick = onAddListing,
+            modifier = Modifier.fillMaxWidth()
+        ) {
+            Text("Add New Listing")
+        }
+
         OutlinedButton(
-            onClick = onBack
+            onClick = onBack,
+            modifier = Modifier.fillMaxWidth()
         ) {
             Text("Back to Home")
         }

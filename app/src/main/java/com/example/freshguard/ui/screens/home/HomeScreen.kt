@@ -8,6 +8,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.BarChart
 import androidx.compose.material.icons.filled.Home
 import androidx.compose.material.icons.filled.Person
@@ -26,6 +27,7 @@ import com.example.freshguard.ui.components.HomeQuickActionCard
 fun HomeScreen(
     onOpenDiscover: () -> Unit,
     onOpenMyListings: () -> Unit,
+    onOpenAddListing: () -> Unit,
     onOpenStats: () -> Unit,
     onOpenProfile: () -> Unit
 ) {
@@ -86,21 +88,28 @@ fun HomeScreen(
                 horizontalArrangement = Arrangement.spacedBy(12.dp)
             ) {
                 HomeQuickActionCard(
+                    title = "Add Listing",
+                    subtitle = "Create a new food post",
+                    icon = Icons.Default.Add,
+                    onClick = onOpenAddListing,
+                    modifier = Modifier.weight(1f)
+                )
+
+                HomeQuickActionCard(
                     title = "Stats",
                     subtitle = "View your rescue progress",
                     icon = Icons.Default.BarChart,
                     onClick = onOpenStats,
                     modifier = Modifier.weight(1f)
                 )
-
-                HomeQuickActionCard(
-                    title = "Profile",
-                    subtitle = "Update your preferences",
-                    icon = Icons.Default.Person,
-                    onClick = onOpenProfile,
-                    modifier = Modifier.weight(1f)
-                )
             }
+
+            HomeQuickActionCard(
+                title = "Profile",
+                subtitle = "Update your preferences",
+                icon = Icons.Default.Person,
+                onClick = onOpenProfile
+            )
         }
 
         Column(

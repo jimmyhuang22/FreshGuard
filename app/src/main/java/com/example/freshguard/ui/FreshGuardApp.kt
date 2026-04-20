@@ -26,6 +26,7 @@ import com.example.freshguard.ui.screens.auth.LoginScreen
 import com.example.freshguard.ui.screens.auth.SignUpScreen
 import com.example.freshguard.ui.screens.discover.DiscoverScreen
 import com.example.freshguard.ui.screens.home.HomeScreen
+import com.example.freshguard.ui.screens.listings.AddEditListingScreen
 import com.example.freshguard.ui.screens.listings.ListingDetailScreen
 import com.example.freshguard.ui.screens.listings.MyListingsScreen
 import com.example.freshguard.ui.screens.profile.ProfileScreen
@@ -123,6 +124,9 @@ fun FreshGuardApp() {
                     onOpenMyListings = {
                         navController.navigate(Screen.MyListings.route)
                     },
+                    onOpenAddListing = {
+                        navController.navigate(Screen.AddEditListing.route)
+                    },
                     onOpenStats = {
                         navController.navigate(Screen.Stats.route)
                     },
@@ -137,8 +141,22 @@ fun FreshGuardApp() {
                     onBack = {
                         navController.popBackStack()
                     },
+                    onAddListing = {
+                        navController.navigate(Screen.AddEditListing.route)
+                    },
                     onOpenDetail = { listingId ->
                         navController.navigate(Screen.ListingDetail.createRoute(listingId))
+                    }
+                )
+            }
+
+            composable(Screen.AddEditListing.route) {
+                AddEditListingScreen(
+                    onBack = {
+                        navController.popBackStack()
+                    },
+                    onSave = {
+                        navController.popBackStack()
                     }
                 )
             }
