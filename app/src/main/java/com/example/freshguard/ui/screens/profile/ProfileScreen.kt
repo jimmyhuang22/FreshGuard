@@ -1,6 +1,7 @@
 package com.example.freshguard.ui.screens.profile
 
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
@@ -10,63 +11,86 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material3.Card
-import androidx.compose.material3.HorizontalDivider
+import androidx.compose.material3.Button
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.OutlinedButton
+import androidx.compose.material3.Slider
+import androidx.compose.material3.Surface
 import androidx.compose.material3.Switch
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableFloatStateOf
 import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import com.example.freshguard.ui.components.FreshGuardCard
 import com.example.freshguard.ui.components.ProfileOptionRow
+import com.example.freshguard.ui.components.SimpleDropdownField
+import com.example.freshguard.ui.theme.FreshGuardTheme
 
 @Composable
 fun ProfileScreen() {
-    val scrollState = rememberScrollState()
+    var dietaryPreference by rememberSaveable { mutableStateOf("Vegetarian-friendly") }
+    var pickupRadius by rememberSaveable { mutableFloatStateOf(5f) }
+    var urgentReminders by rememberSaveable { mutableStateOf(true) }
+    var personalisedSuggestions by rememberSaveable { mutableStateOf(true) }
 
-    var notificationsEnabled by remember { mutableStateOf(true) }
-    var darkModeEnabled by remember { mutableStateOf(false) }
+    val dietaryOptions = listOf(
+        "Vegetarian-friendly",
+        "No preference",
+        "Vegan-friendly",
+        "Halal-friendly",
+        "Dairy-free"
+    )
 
     Column(
         modifier = Modifier
             .fillMaxSize()
-            .verticalScroll(scrollState)
+            .verticalScroll(rememberScrollState())
             .padding(24.dp),
-        verticalArrangement = Arrangement.spacedBy(16.dp)
+        verticalArrangement = Arrangement.spacedBy(18.dp)
     ) {
-        Text(
-            text = "Profile",
-            style = MaterialTheme.typography.headlineMedium
-        )
+        Column(
+            verticalArrangement = Arrangement.spacedBy(8.dp)
+        ) {
+            Text(
+                text = "Profile",
+                style = MaterialTheme.typography.headlineMedium
+            )
 
-        Card {
+            Text(
+                text = "Adjust account preferences so FreshGuard can prioritise nearby, relevant, and time-sensitive donation opportunities.",
+                style = MaterialTheme.typography.bodyLarge,
+                color = MaterialTheme.colorScheme.onSurfaceVariant
+            )
+        }
+
+        FreshGuardCard {
             Row(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(16.dp),
+                modifier = Modifier.fillMaxWidth(),
                 verticalAlignment = Alignment.CenterVertically,
                 horizontalArrangement = Arrangement.spacedBy(16.dp)
             ) {
-                Card(
-                    modifier = Modifier
-                        .size(64.dp)
-                        .clip(CircleShape)
+                Surface(
+                    modifier = Modifier.size(72.dp)
+                        .clip(CircleShape),
+                    shape = CircleShape,
+                    color = MaterialTheme.colorScheme.secondaryContainer
                 ) {
-                    Column(
-                        modifier = Modifier.fillMaxSize(),
-                        verticalArrangement = Arrangement.Center,
-                        horizontalAlignment = Alignment.CenterHorizontally
+                    Box(
+                        modifier = Modifier
+                            .fillMaxSize(),
+                        contentAlignment = Alignment.Center
                     ) {
                         Text(
                             text = "JH",
-                            style = MaterialTheme.typography.titleLarge
+                            style = MaterialTheme.typography.headlineSmall,
+                            color = MaterialTheme.colorScheme.primary
                         )
                     }
                 }
@@ -80,109 +104,107 @@ fun ProfileScreen() {
                     )
                     Text(
                         text = "jhua0215@student.monash.edu",
-                        style = MaterialTheme.typography.bodyMedium
+                        style = MaterialTheme.typography.bodyMedium,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant
                     )
                     Text(
-                        text = "FreshGuard community member",
-                        style = MaterialTheme.typography.bodyMedium
+                        text = "FreshGuard community donor and receiver",
+                        style = MaterialTheme.typography.bodyMedium,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant
                     )
                 }
             }
         }
 
-        Card {
+        FreshGuardCard {
+            Text(
+                text = "Preferences",
+                style = MaterialTheme.typography.titleLarge
+            )
+
+            SimpleDropdownField(
+                label = "Dietary preference",
+                selectedValue = dietaryPreference,
+                options = dietaryOptions,
+                onValueSelected = { dietaryPreference = it }
+            )
+
             Column(
-                modifier = Modifier.padding(16.dp),
-                verticalArrangement = Arrangement.spacedBy(8.dp)
+                verticalArrangement = Arrangement.spacedBy(6.dp)
             ) {
                 Text(
-                    text = "Preferences",
+                    text = "Pickup radius",
                     style = MaterialTheme.typography.titleMedium
                 )
-
-                ProfileOptionRow(
-                    title = "Notifications",
-                    subtitle = "Get reminders for urgent food items and pickup timing",
-                    trailingContent = {
-                        Switch(
-                            checked = notificationsEnabled,
-                            onCheckedChange = { notificationsEnabled = it }
-                        )
-                    }
-                )
-
-                HorizontalDivider()
-
-                ProfileOptionRow(
-                    title = "Dark mode",
-                    subtitle = "Prototype setting for appearance preference",
-                    trailingContent = {
-                        Switch(
-                            checked = darkModeEnabled,
-                            onCheckedChange = { darkModeEnabled = it }
-                        )
-                    }
-                )
-
-                HorizontalDivider()
-
-                ProfileOptionRow(
-                    title = "Preferred pickup radius",
-                    subtitle = "Currently set to within 5 km",
-                    trailingContent = {
-                        Text(
-                            text = "5 km",
-                            style = MaterialTheme.typography.titleMedium
-                        )
-                    }
-                )
-
-                HorizontalDivider()
-
-                ProfileOptionRow(
-                    title = "Dietary interests",
-                    subtitle = "Bakery, Dairy, Prepared Meals",
-                    trailingContent = {
-                        Text(
-                            text = "Edit",
-                            style = MaterialTheme.typography.titleMedium
-                        )
-                    }
-                )
-            }
-        }
-
-        Card {
-            Column(
-                modifier = Modifier.padding(16.dp),
-                verticalArrangement = Arrangement.spacedBy(10.dp)
-            ) {
                 Text(
-                    text = "Account actions",
-                    style = MaterialTheme.typography.titleMedium
+                    text = "${pickupRadius.toInt()} km from your preferred location",
+                    style = MaterialTheme.typography.bodyMedium,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant
                 )
-
-                OutlinedButton(
-                    onClick = { },
-                    modifier = Modifier.fillMaxWidth()
-                ) {
-                    Text("Manage saved locations")
-                }
-
-                OutlinedButton(
-                    onClick = { },
-                    modifier = Modifier.fillMaxWidth()
-                ) {
-                    Text("Privacy and safety settings")
-                }
-
-                OutlinedButton(
-                    onClick = { },
-                    modifier = Modifier.fillMaxWidth()
-                ) {
-                    Text("Log out")
-                }
+                Slider(
+                    value = pickupRadius,
+                    onValueChange = { pickupRadius = it },
+                    valueRange = 1f..15f,
+                    steps = 13
+                )
             }
+
+            ProfileOptionRow(
+                title = "Urgent reminders",
+                subtitle = "Alert me when a saved or nearby listing is close to expiry.",
+                trailingContent = {
+                    Switch(
+                        checked = urgentReminders,
+                        onCheckedChange = { urgentReminders = it }
+                    )
+                }
+            )
+
+            ProfileOptionRow(
+                title = "Personalised suggestions",
+                subtitle = "Use my dietary preference and recent activity to surface more relevant listings.",
+                trailingContent = {
+                    Switch(
+                        checked = personalisedSuggestions,
+                        onCheckedChange = { personalisedSuggestions = it }
+                    )
+                }
+            )
         }
+
+        FreshGuardCard {
+            Text(
+                text = "Account details",
+                style = MaterialTheme.typography.titleLarge
+            )
+            Text(
+                text = "Preferred pickup suburb: Clayton",
+                style = MaterialTheme.typography.bodyMedium
+            )
+            Text(
+                text = "Saved locations: Campus south entrance, Monash area library",
+                style = MaterialTheme.typography.bodyMedium
+            )
+            Text(
+                text = "Prototype mode: Mock preferences only, ready for Firebase/Room integration later",
+                style = MaterialTheme.typography.bodyMedium,
+                color = MaterialTheme.colorScheme.onSurfaceVariant
+            )
+        }
+
+        Button(
+            onClick = { },
+            modifier = Modifier.fillMaxWidth()
+        ) {
+            Text("Save changes")
+        }
+    }
+}
+
+@Preview(showBackground = true)
+@Composable
+private fun ProfileScreenPreview() {
+    FreshGuardTheme {
+        ProfileScreen()
     }
 }
