@@ -2,7 +2,6 @@ package com.example.freshguard.ui.screens.listings
 
 import android.app.DatePickerDialog
 import android.app.TimePickerDialog
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -17,12 +16,15 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.foundation.gestures.detectTapGestures
+import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.CalendarMonth
 import androidx.compose.material.icons.filled.Schedule
 import androidx.compose.material3.Button
 import androidx.compose.material3.Checkbox
 import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.OutlinedTextField
@@ -353,29 +355,26 @@ private fun PickerField(
     modifier: Modifier = Modifier,
     onClick: () -> Unit
 ) {
-    androidx.compose.foundation.layout.Box(
-        modifier = modifier.fillMaxWidth()
-    ) {
-        OutlinedTextField(
-            value = value,
-            onValueChange = {},
-            modifier = Modifier.fillMaxWidth(),
-            readOnly = true,
-            label = { Text(label) },
-            trailingIcon = {
+    OutlinedTextField(
+        value = value,
+        onValueChange = {},
+        modifier = modifier
+            .fillMaxWidth()
+            .pointerInput(onClick) {
+                detectTapGestures(onTap = { onClick() })
+            },
+        readOnly = true,
+        singleLine = true,
+        label = { Text(label) },
+        trailingIcon = {
+            IconButton(onClick = onClick) {
                 Icon(
                     imageVector = icon,
-                    contentDescription = null
+                    contentDescription = "Select $label"
                 )
             }
-        )
-
-        androidx.compose.foundation.layout.Box(
-            modifier = Modifier
-                .fillMaxSize()
-                .clickable(onClick = onClick)
-        )
-    }
+        }
+    )
 }
 
 private fun formatDate(calendar: Calendar): String {
