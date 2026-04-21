@@ -79,7 +79,7 @@ fun AddEditListingScreen(
     var itemName by rememberSaveable(listingId) { mutableStateOf(existingListing?.title ?: "Vegetable curry") }
     var category by rememberSaveable(listingId) { mutableStateOf(existingListing?.category ?: "Prepared Meals") }
     var quantity by rememberSaveable(listingId) { mutableStateOf(existingListing?.quantity ?: "4 portions") }
-    var urgency by rememberSaveable(listingId) {
+    var urgencyHint by rememberSaveable(listingId) {
         mutableStateOf(existingListing?.let(::editableUrgencyValue) ?: "Donate Soon")
     }
     var storageMethod by rememberSaveable { mutableStateOf("Refrigerated") }
@@ -103,7 +103,7 @@ fun AddEditListingScreen(
         "Snacks",
         "Beverages"
     )
-    val urgencyOptions = listOf(
+    val urgencyHintOptions = listOf(
         "Urgent",
         "Donate Soon",
         "Safe"
@@ -194,7 +194,7 @@ fun AddEditListingScreen(
 
             FormSection(
                 title = "Section A: Item Details",
-                description = "Start with the essentials a receiver needs before deciding whether to open the listing."
+                description = "Start with the essentials a receiver needs before deciding whether to open the listing, including a first-pass urgency hint."
             ) {
                 OutlinedTextField(
                     value = itemName,
@@ -222,10 +222,16 @@ fun AddEditListingScreen(
                 )
 
                 SimpleDropdownField(
-                    label = "Urgency level",
-                    selectedValue = urgency,
-                    options = urgencyOptions,
-                    onValueSelected = { urgency = it }
+                    label = "Initial urgency hint",
+                    selectedValue = urgencyHint,
+                    options = urgencyHintOptions,
+                    onValueSelected = { urgencyHint = it }
+                )
+
+                Text(
+                    text = "FreshGuard will refine this urgency after considering expiry, storage method, pickup timing, and local conditions.",
+                    style = MaterialTheme.typography.bodySmall,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant
                 )
             }
 
