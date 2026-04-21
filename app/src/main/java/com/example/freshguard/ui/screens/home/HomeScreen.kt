@@ -7,6 +7,7 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
@@ -56,6 +57,7 @@ fun HomeScreen(
         containerColor = MaterialTheme.colorScheme.background,
         floatingActionButton = {
             ExtendedFloatingActionButton(
+                modifier = Modifier.padding(end = 6.dp, bottom = 12.dp),
                 onClick = onOpenAddListing,
                 icon = {
                     Icon(
@@ -74,9 +76,9 @@ fun HomeScreen(
                 start = 24.dp,
                 top = innerPadding.calculateTopPadding() + 24.dp,
                 end = 24.dp,
-                bottom = innerPadding.calculateBottomPadding() + 112.dp
+                bottom = innerPadding.calculateBottomPadding() + 132.dp
             ),
-            verticalArrangement = Arrangement.spacedBy(20.dp)
+            verticalArrangement = Arrangement.spacedBy(18.dp)
         ) {
             item {
                 Column(
@@ -119,14 +121,14 @@ fun HomeScreen(
 
                     HomeQuickActionCard(
                         title = "My Listings",
-                        subtitle = "Review your active items and update donation timing",
+                        subtitle = "Review active donations and update timing",
                         icon = Icons.Outlined.Inventory2,
                         onClick = onOpenMyListings
                     )
 
                     HomeQuickActionCard(
                         title = "Discover",
-                        subtitle = "Browse nearby rescue opportunities and compare urgency",
+                        subtitle = "Browse nearby rescue opportunities",
                         icon = Icons.Default.Search,
                         onClick = onOpenDiscover
                     )
