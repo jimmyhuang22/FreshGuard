@@ -88,7 +88,7 @@ fun ProfileScreen() {
                         contentAlignment = Alignment.Center
                     ) {
                         Text(
-                            text = "JH",
+                            text = "AC",
                             style = MaterialTheme.typography.headlineSmall,
                             color = MaterialTheme.colorScheme.primary
                         )
@@ -99,11 +99,11 @@ fun ProfileScreen() {
                     verticalArrangement = Arrangement.spacedBy(4.dp)
                 ) {
                     Text(
-                        text = "Jihao Huang",
+                        text = "Alex Chen",
                         style = MaterialTheme.typography.titleLarge
                     )
                     Text(
-                        text = "jhua0215@student.monash.edu",
+                        text = "alex.chen@student.monash.edu",
                         style = MaterialTheme.typography.bodyMedium,
                         color = MaterialTheme.colorScheme.onSurfaceVariant
                     )
